@@ -56,7 +56,6 @@ describe('Canary-BE routes', () => {
       .then(res => expect(res.body).toEqual({ id: expect.any(String), userName: 'benwa', userRole: 'student' }));
   });
 
-  // test for failed login
   it('should throw an error if a user gives an incorrect password or username', async () => {
     const user = {
       userName: 'benwa',
@@ -83,5 +82,37 @@ describe('Canary-BE routes', () => {
         password: '1234'
       })
       .then(res => expect(res.body.message).toEqual('Invalid username/password'))
+  })
+
+  it('test that a signed up user has a jwt', async () => {
+    const user = {
+      userName: 'benwa',
+      password: '1234',
+      userRole: 'student'
+    };
+
+    const newUser = await request(app)
+      .post('/api/v1/auth/signup')
+      .send(user);
+
+    return expect(newUser.header["set-cookie"][0]).toEqual(expect.any(String))
+  })
+
+  it('test that a logged in user has a jwt', async () => {
+    const user = {
+      userName: 'benwa',
+      password: '1234',
+      userRole: 'student'
+    };
+
+    await request(app)
+      .post('/api/v1/auth/signup')
+      .send(user);
+
+    const newUser = await request(app)
+      .post('/api/v1/auth/login')
+      .send(user);
+
+    return expect(newUser.header["set-cookie"][0]).toEqual(expect.any(String))
   })
 });
