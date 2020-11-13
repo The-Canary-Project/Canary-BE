@@ -8,5 +8,7 @@ describe('Canary-BE routes', () => {
     return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'));
   });
 
-  
+  it('is yes', () => {
+    expect('yes').toEqual('yes');
+  });
 });
