@@ -21,6 +21,8 @@ describe('Canary-BE routes', () => {
       .then(res => expect(res.body).toEqual({ id: expect.any(String), userName: 'benwa', userRole: 'student' }));
   });
 
+  // test for same userName signups
+
   it('should login a user via POST', async() => {
     const user = {
       userName: 'benwa',
@@ -37,4 +39,7 @@ describe('Canary-BE routes', () => {
       .send(user)
       .then(res => expect(res.body).toEqual({ id: expect.any(String), userName: 'benwa', userRole: 'student' }));
   });
+
+  // test for failed login
+  // it('should fail to signup a user who is already loged in');
 });
