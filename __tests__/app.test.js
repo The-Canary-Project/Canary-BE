@@ -8,7 +8,16 @@ describe('Canary-BE routes', () => {
     return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'));
   });
 
-  it('is yes', () => {
-    expect('yes').toEqual('yes');
+  it('should insert a user into the DB via POST', async() => {
+    const user = {
+      userName: 'benwa',
+      password: '1234',
+      userRole: 'student'
+    };
+
+    return request(app)
+      .post('/api/v1/auth/signup')
+      .send(user)
+      .then(res => expect(res.body).toEqual({ id: expect.any(String), userName: 'benwa', userRole: 'student' }));
   });
 });
