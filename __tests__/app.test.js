@@ -57,5 +57,31 @@ describe('Canary-BE routes', () => {
   });
 
   // test for failed login
-  // it('should fail to signup a user who is already loged in');
+  it('should throw an error if a user gives an incorrect password or username', async () => {
+    const user = {
+      userName: 'benwa',
+      password: '1234',
+      userRole: 'student'
+    };
+
+    await request(app)
+      .post('/api/v1/auth/signup')
+      .send(user);
+
+    await request(app)
+      .post('/api/v1/auth/login')
+      .send({
+        userName: 'benwa',
+        password: '1236'
+      })
+      .then(res => expect(res.body.message).toEqual('Invalid username/password'))
+
+    await request(app)
+      .post('/api/v1/auth/login')
+      .send({
+        userName: 'benwaaa',
+        password: '1234'
+      })
+      .then(res => expect(res.body.message).toEqual('Invalid username/password'))
+  })
 });
