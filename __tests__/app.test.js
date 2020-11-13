@@ -8,7 +8,7 @@ describe('Canary-BE routes', () => {
     return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'));
   });
 
-  it('should insert a user into the DB via POST', async() => {
+  it('should insert a user into the DB via POST', async () => {
     const user = {
       userName: 'benwa',
       password: '1234',
@@ -22,8 +22,24 @@ describe('Canary-BE routes', () => {
   });
 
   // test for same userName signups
+  it('should throw an error if a user signs up with an already taken username', async () => {
+    const user = {
+      userName: 'benwa',
+      password: '1234',
+      userRole: 'student'
+    };
 
-  it('should login a user via POST', async() => {
+    await request(app)
+      .post('/api/v1/auth/signup')
+      .send(user)
+
+    return await request(app)
+      .post('/api/v1/auth/signup')
+      .send(user)
+      .then(res => expect(res.body.message).toEqual('duplicate key value violates unique constraint \"users_user_name_key\"'))
+  })
+
+  it('should login a user via POST', async () => {
     const user = {
       userName: 'benwa',
       password: '1234',
