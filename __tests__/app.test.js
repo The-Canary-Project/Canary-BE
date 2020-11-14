@@ -3,12 +3,12 @@ const pool = require('../lib/utils/pool');
 const request = require('supertest');
 const app = require('../lib/app');
 
-describe('Canary-BE routes', () => {
+describe('Canary-BE users routes', () => {
   beforeEach(() => {
     return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'));
   });
 
-  it('should insert a user into the DB via POST', async () => {
+  it('should insert a user into the DB via POST', async() => {
     const user = {
       userName: 'benwa',
       password: '1234',
@@ -22,7 +22,7 @@ describe('Canary-BE routes', () => {
   });
 
   // test for same userName signups
-  it('should throw an error if a user signs up with an already taken username', async () => {
+  it('should throw an error if a user signs up with an already taken username', async() => {
     const user = {
       userName: 'benwa',
       password: '1234',
@@ -31,15 +31,15 @@ describe('Canary-BE routes', () => {
 
     await request(app)
       .post('/api/v1/auth/signup')
-      .send(user)
+      .send(user);
 
     return await request(app)
       .post('/api/v1/auth/signup')
       .send(user)
-      .then(res => expect(res.body.message).toEqual('duplicate key value violates unique constraint \"users_user_name_key\"'))
-  })
+      .then(res => expect(res.body.message).toEqual('duplicate key value violates unique constraint \"users_user_name_key\"'));
+  });
 
-  it('should login a user via POST', async () => {
+  it('should login a user via POST', async() => {
     const user = {
       userName: 'benwa',
       password: '1234',
@@ -56,7 +56,7 @@ describe('Canary-BE routes', () => {
       .then(res => expect(res.body).toEqual({ id: expect.any(String), userName: 'benwa', userRole: 'student' }));
   });
 
-  it('should throw an error if a user gives an incorrect password or username', async () => {
+  it('should throw an error if a user gives an incorrect password or username', async() => {
     const user = {
       userName: 'benwa',
       password: '1234',
@@ -73,7 +73,7 @@ describe('Canary-BE routes', () => {
         userName: 'benwa',
         password: '1236'
       })
-      .then(res => expect(res.body.message).toEqual('Invalid username/password'))
+      .then(res => expect(res.body.message).toEqual('Invalid username/password'));
 
     await request(app)
       .post('/api/v1/auth/login')
@@ -81,10 +81,10 @@ describe('Canary-BE routes', () => {
         userName: 'benwaaa',
         password: '1234'
       })
-      .then(res => expect(res.body.message).toEqual('Invalid username/password'))
-  })
+      .then(res => expect(res.body.message).toEqual('Invalid username/password'));
+  });
 
-  it('test that a signed up user has a jwt', async () => {
+  it('test that a signed up user has a jwt', async() => {
     const user = {
       userName: 'benwa',
       password: '1234',
@@ -95,10 +95,10 @@ describe('Canary-BE routes', () => {
       .post('/api/v1/auth/signup')
       .send(user);
 
-    return expect(newUser.header["set-cookie"][0]).toEqual(expect.any(String))
-  })
+    return expect(newUser.header['set-cookie'][0]).toEqual(expect.any(String));
+  });
 
-  it('test that a logged in user has a jwt', async () => {
+  it('test that a logged in user has a jwt', async() => {
     const user = {
       userName: 'benwa',
       password: '1234',
@@ -113,6 +113,6 @@ describe('Canary-BE routes', () => {
       .post('/api/v1/auth/login')
       .send(user);
 
-    return expect(newUser.header["set-cookie"][0]).toEqual(expect.any(String))
-  })
+    return expect(newUser.header['set-cookie'][0]).toEqual(expect.any(String));
+  });
 });
