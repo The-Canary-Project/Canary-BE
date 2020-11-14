@@ -1,8 +1,21 @@
 DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS prompts CASCADE;
 
 CREATE TABLE users (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_name VARCHAR(20) NOT NULL UNIQUE,
   password_hash VARCHAR NOT NULL,
   user_role VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE prompts (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  text VARCHAR NOT NULL,
+  image_url VARCHAR,
+  type VARCHAR NOT NULL,
+  teacher_id VARCHAR,
+  activity_name VARCHAR,
+  categories JSONB,
+  answers JSONB NOT NULL,
+  timer INT
 );
