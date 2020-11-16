@@ -7,7 +7,7 @@ describe('Canary-BE users routes', () => {
   beforeEach(() => {
     return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'));
   });
-
+  
   it('should insert a user into the DB via POST', async() => {
     const user = {
       userName: 'benwa',
