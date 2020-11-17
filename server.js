@@ -1,16 +1,18 @@
 const app = require('./lib/app');
 const pool = require('./lib/utils/pool');
-const socket = require('socket.io');
+const io = require('socket.io')(8080, {
+  cors: {
+    origin: 'http://localhost:7891',
+    credentials: true,
+    methods: ['GET', 'POST']
+  }
+});
 
 const PORT = process.env.PORT || 7890;
 
 app.listen(PORT, () => {
   console.log(`Started on ${PORT}`);
 });
-
-const io = socket(app.listen(8080, () => {
-  console.log('Started on 8080');
-}));
 
 //Socket Connection
 io.on('connection', (socket) => {
@@ -24,6 +26,7 @@ io.on('connection', (socket) => {
     socket.join(room);
     io.sockets.in(room).emit('connectToRoom', `You are in ${room}'s Classroom`);
   });
+
   //Send List of Rooms
   socket.on('GET_ROOMS', () => {
     socket.emit('ROOM_LIST', io.sockets.adapter.rooms);
@@ -31,15 +34,19 @@ io.on('connection', (socket) => {
 
   //Messaging
   socket.on('SEND_MESSAGE', (data) => {
-    io.sockets.in(room.emit('RECEIVE_MESSAGE', data));
+    console.log('MESSAGE RECEIVED');
+
+    //io.sockets.in(room.emit('RECEIVE_MESSAGE', data));
+    //remember to put rooms back in???
+    io.sockets.emit('RECEIVE_MESSAGE', data);
+
     console.log(`${data.author} joined the chat`);
   });
 
   socket.on('SEND_QUESTION', (data) => {
     console.log(data, 'SEND_QUESTION');
-    io.sockets.in(room).emit(
-      'RECEIVE_QUESTION', data
-    );
+    //io.sockets.in(room).emit('RECEIVE_QUESTION', data);
+    io.sockets.emit('RECEIVE_QUESTION', data);
   });
 });
 
