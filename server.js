@@ -1,18 +1,16 @@
 const app = require('./lib/app');
 const pool = require('./lib/utils/pool');
-const io = require('socket.io')(8080, {
-  cors: {
-    origin: 'http://localhost:7891',
-    credentials: true,
-    methods: ['GET', 'POST']
-  }
-});
 
 const PORT = process.env.PORT || 7890;
 
-app.listen(PORT, () => {
-  console.log(`Started on ${PORT}`);
-});
+const io = require('socket.io')(
+  app.listen(PORT, () => {
+    console.log(`Started on ${PORT}`);
+  }), {
+    cors: {
+      origin: true
+    }
+  });
 
 //Socket Connection
 io.on('connection', (socket) => {
@@ -37,7 +35,7 @@ io.on('connection', (socket) => {
     console.log('MESSAGE RECEIVED');
 
     //io.sockets.in(room.emit('RECEIVE_MESSAGE', data));
-    //remember to put rooms back in???
+
     io.sockets.emit('RECEIVE_MESSAGE', data);
 
     console.log(`${data.author} joined the chat`);
@@ -45,7 +43,9 @@ io.on('connection', (socket) => {
 
   socket.on('SEND_QUESTION', (data) => {
     console.log(data, 'SEND_QUESTION');
+
     //io.sockets.in(room).emit('RECEIVE_QUESTION', data);
+    
     io.sockets.emit('RECEIVE_QUESTION', data);
   });
 });
